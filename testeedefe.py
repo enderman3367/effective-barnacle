@@ -1,4 +1,5 @@
 # coding: utf-8
+
 import openai
 import re
 import pygame
@@ -29,76 +30,3 @@ completion = openai.ChatCompletion.create(
 
 reply = completion.choices[0].message['content']
 print(f"Received reply: {reply}\n")
-
-def refined_parse_reply(reply):
-    """Further refined parsing of the reply to extract commands and their content."""
-    pattern = r'\[(TEXT|EMO|INT|SAV)\]:\s(.*?)(?=\n?\[|$)'
-    matches = re.findall(pattern, reply, re.DOTALL)
-    parsed_data = {match[0]: match[1].strip() for match in matches}
-    return parsed_data
-
-# Define the placeholder functions
-def process_text(content):
-    """Send the content to ElevenLabs Text-to-Speech Stream API and play the audio."""
-    # Define the ElevenLabs API endpoint and headers
-    VOICE_ID = "w87STgrGJipczC3tgCGc"  # Replace with the voice ID you want to use
-    API_ENDPOINT = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}/stream"
-    HEADERS = {
-        "xi-api-key": "bb73cb3343b6c5408e2c9bb1cdc881bb",
-        "Content-Type": "application/json",
-        "accept": "audio/mpeg"
-    }
-    
-    # Define the payload for the API request
-    payload = {
-        "text": content,
-        "model_id": "eleven_monolingual_v1",
-        "voice_settings": {
-            "stability": 0.5,
-            "similarity_boost": 0.5
-        }
-    }
-    
-    # Send the request to the API
-    response = requests.post(API_ENDPOINT, headers=HEADERS, json=payload)
-    
-    # Check if the request was successful
-    if response.status_code == 200:
-        # Load the audio data into pygame and play it
-        audio_data = io.BytesIO(response.content)
-        pygame.mixer.init()
-        pygame.mixer.music.load(audio_data)
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-    else:
-        print(f"Error: {response.status_code} - {response.text}")
-    print(f"[speaking as]: {content}")
-
-
-def process_emo(content):
-    """Placeholder function for EMO."""
-    print(f"[emotion processed as]: {content}")
-
-def process_int(content):
-    """Placeholder function for INT."""
-    print(f"[interface is processed]: {content}")
-
-def process_sav(content):
-    """Placeholder function for SAV."""
-    print(f"[save is processed]: {content}")
-
-# Map commands to functions
-command_to_function = {
-    "TEXT": process_text,
-    "EMO": process_emo,
-    "INT": process_int,
-    "SAV": process_sav
-}
-
-# Parse the reply to get the commands and content
-parsed_data = refined_parse_reply(reply)
-
-# Use the command-to-function mapping
-for command, content in parsed_data.items():
-    command_to_function[command](content)
