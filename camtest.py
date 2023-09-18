@@ -46,12 +46,3 @@ def analyze_photo_with_asticavision(filename='captured_image.jpg'):
         return response.json()
     else:
         return {"error": f"API returned {response.status_code}: {response.text}"}
-
-def process_int(content):
-    """Modified function for INT."""
-    if content == "view":
-        capture_photo()
-        analysis_results = analyze_photo_with_asticavision()
-        print(f"[interface is processed]: {analysis_results}")
-    else:
-        print(f"[interface is processed]: {content}")

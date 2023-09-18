@@ -42,7 +42,7 @@ while True:
     is_active = vad.is_speech(data, sample_rate=RATE)
     
     # Check Flagging for Stop after N Seconds
-    idle_time = 0.32
+    idle_time = 0.77
     if is_active:
         inactive_session = False
     else:
@@ -95,7 +95,7 @@ def transcribe_audio(audio_file_path):
         transcription = openai.Audio.transcribe("whisper-1", audio_file)
     return transcription['text']
 
-transcription_text = transcribe_audio('usraudfile.wav')
+transcription_text = str(transcribe_audio('usraudfile.wav'))
 
 openai.api_key = "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"
 
@@ -193,3 +193,5 @@ parsed_data = refined_parse_reply(reply)
 # Use the command-to-function mapping
 for command, content in parsed_data.items():
     command_to_function[command](content)
+
+process_text(reply)

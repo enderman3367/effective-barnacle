@@ -1,6 +1,7 @@
 import cv2
 import requests
 import json
+import base64
 
 def capture_photo(filename='captured_image.jpg'):
     cap = cv2.VideoCapture(0)  # 0 is the default camera
