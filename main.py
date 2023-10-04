@@ -10,6 +10,7 @@ import pyaudio
 import sys
 import time
 import wave
+from elevenlabs import generate, stream
 
 conversation_history = [
     {
@@ -31,43 +32,11 @@ def refined_parse_reply(reply):
     return parsed_data
 
 def process_text(content):
-    """Send the content to ElevenLabs Text-to-Speech Stream API and play the audio."""
-    # Define the ElevenLabs API endpoint and headers
-    VOICE_ID = "w87STgrGJipczC3tgCGc"  # Replace with the voice ID you want to use
-    API_ENDPOINT = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}/stream"
-    HEADERS = {
-        "xi-api-key": "bb73cb3343b6c5408e2c9bb1cdc881bb",
-        "Content-Type": "application/json",
-        "accept": "audio/mpeg"
-    }
-    
-    # Define the payload for the API request
-    payload = {
-        "text": content,
-        "model_id": "eleven_monolingual_v1",
-        "voice_settings": {
-            "stability": 0.5,
-            "similarity_boost": 0.5
-        }
-        # Optionally, you can add more parameters like:
-        # "optimize_streaming_latency": 0,
-        # "output_format": "mp3_44100"
-    }
-    
-    # Send the request to the API
-    response = requests.post(API_ENDPOINT, headers=HEADERS, json=payload)
-    
-    # Check if the request was successful
-    if response.status_code == 200:
-        # Load the audio data into pygame and play it
-        audio_data = io.BytesIO(response.content)
-        pygame.mixer.init()
-        pygame.mixer.music.load(audio_data)
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-    else:
-        print(f"Error: {response.status_code} - {response.text}")
+    audio_stream = generate(
+    text=content,
+    stream=True
+    )
+    stream(audio_stream)
     print(f"[speaking as]: {content}")
 
 
@@ -95,7 +64,7 @@ while True:
     print("Voice Activity Monitoring")
     print("1 - Activity Detected")
     print("_ - No Activity Detected")
-    print("X - No Activity Detected for Last IDLE_TIME Seconds")
+    print("X - No Activity Detected for Last Seconds")
     print("\nMonitor Voice Activity Below:")
 
     # Parameters
@@ -192,7 +161,8 @@ while True:
         # Get GPT's response and append to conversation_history
     reply = completion.choices[0].message['content']
     conversation_history.append({"role": "assistant", "content": reply})
-    if "bye" in user_message.lower() or len(conversation_history) > 10:
+    if "bye" in user_message.lower() or len(conversation_history) > 30:
+        print('bye nerd')
         break
 
     parsed_data = refined_parse_reply(reply)
