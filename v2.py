@@ -4,6 +4,7 @@ import re
 import serial
 import time
 import pygame
+from gradio_client import Client as gradCli
 import requests
 import io
 from twilio.rest import Client
@@ -225,13 +226,30 @@ while True:
     stream.stop_stream()
 
     openai.api_key = "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"
-    audio_file = open("usraudfile.wav", "rb")
+    audio_path = "usraudfile.wav"
+    api_url = "https://sanchit-gandhi-whisper-jax.hf.space/"
 
+    # set up the Gradio client
+    client = gradCli(api_url)
+
+
+    def transcribe_audio(audio_path, task="transcribe", return_timestamps=False):
+        """Function to transcribe an audio file using the Whisper JAX endpoint."""
+        if task not in ["transcribe", "translate"]:
+            raise ValueError("task should be one of 'transcribe' or 'translate'.")
+
+        text, runtime = client.predict(
+            audio_path,
+            task,
+            return_timestamps,
+            api_name="/predict_1",
+        )
+        return text
 
     transcription_text = str(transcribe_audio('usraudfile.wav'))
     user_message = transcription_text
     conversation_history.append({"role": "user", "content": user_message})
-    
+    print ('trancription:', transcription_text)
     openai.api_key = "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"
 
     completion = openai.ChatCompletion.create(
@@ -247,7 +265,7 @@ while True:
         # Get GPT's response and append to conversation_history
     reply = completion.choices[0].message['content']
     conversation_history.append({"role": "assistant", "content": reply})
-
+    print ('response:', reply)
     parsed_data = updated_parse_reply(reply)
 
     # Process the text command first to play audio immediately

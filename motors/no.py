@@ -1,3 +1,4 @@
+print('no')
 import serial
 import time
 
@@ -29,7 +30,7 @@ def generate_command(servos, time_of_execution=None, delay=None):
     return "".join(command_parts) + "\r\n"
 
 # Open the serial connection
-ser = serial.Serial('/dev/tty.usbmodem8780696D12331', 9600)
+ser = serial.Serial('/dev/tty.usbmodem878058BF12331', 9600)
 
 try:
     while True:

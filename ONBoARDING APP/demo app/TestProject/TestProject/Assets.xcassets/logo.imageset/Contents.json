@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "DALL·E 2023-10-19 10.30.44 - Vector logo with a simple outline of a robot's head, filled with a gradient from blue to green. The background is clean and white, with the label 'Rob.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "DALL·E 2023-10-19 10.30.44 - Vector logo with a simple outline of a robot's head, filled with a gradient from blue to green. The background is clean and white, with the label 'Rob 1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "DALL·E 2023-10-19 10.30.44 - Vector logo with a simple outline of a robot's head, filled with a gradient from blue to green. The background is clean and white, with the label 'Rob 2.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
